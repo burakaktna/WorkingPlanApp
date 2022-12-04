@@ -1,0 +1,64 @@
+version: "3"
+
+networks:
+  app_network:
+
+services:
+  working_plan_app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile-swoole
+    restart: always
+    ports:
+      - "105:80"
+    volumes:
+      - ./src:/usr/share/nginx/html
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - app_network
+
+  supervisor:
+    build:
+      context: ./src
+      dockerfile: Dockerfile-supervisor
+    restart: always
+    command: /usr/bin/supervisord
+    volumes:
+      - ./src:/usr/share/nginx/html
+    depends_on:
+      - redis
+      - mysql
+      - working_plan_app
+    links:
+      - working_plan_app
+    networks:
+      - app_network
+
+  mysql:
+    image: mariadb:latest
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3303:3306"
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: app
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - app_network
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6305:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app_network
