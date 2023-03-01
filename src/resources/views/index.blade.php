@@ -19,7 +19,9 @@
 <body>
 <section>
 
-    <h1>İşlerin tamamlanma süresi: {{ $plan['weeks'] }} hafta + {{ $plan['hours'] }} saat</h1>
+    <h1>İşlerin toplam süresi: {{ $plan['total']['weeks'] }} hafta + {{ $plan['total']['hours'] }} saat</h1>
+    <h1>Bitirme süremiz: {{ $plan['all_tasks_completed']['weeks'] }} hafta + {{ $plan['all_tasks_completed']['hours'] }} saat</h1>
+
     <table id="plan" class="table cell-border compact stripe hover">
         <thead>
         <tr>

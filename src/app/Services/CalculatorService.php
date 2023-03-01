@@ -70,10 +70,12 @@ class CalculatorService
         // İşlerin tamamlanma süresini hesaplayalım
         $weeks = 0;
         $remaining = 0;
+        $developerWorkTimes = [];
         foreach ($this->schedules as $developer => $tasks) {
             $hours = array_reduce($tasks, function ($hours, $task) {
                 return $hours + $task['estimated_duration'];
             }, 0);
+            $developerWorkTimes[$developer] = $hours;
 
             // İşlerin tamamlanma süresini haftalara bölelim
             $weeks += floor($hours / 45);
@@ -87,9 +89,16 @@ class CalculatorService
             $weeks += floor($remaining / 45);
             $remaining = $remaining % 45;
         }
+        $maxEffortDeveloper = max($developerWorkTimes);
         return [
-            'weeks' => $weeks,
-            'hours' => $remaining
+            'total' => [
+                'weeks' => $weeks,
+                'hours' => $remaining
+            ],
+            'all_tasks_completed' => [
+                'weeks' => floor($maxEffortDeveloper / 45),
+                'hours' => $maxEffortDeveloper % 45
+            ]
         ];
     }
 

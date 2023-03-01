@@ -6,7 +6,7 @@ use App\Models\Provider;
 use App\Services\Contracts\TaskProviderContract;
 use Illuminate\Support\Facades\Http;
 
-class TurkeyTaskProvider implements TaskProviderContract
+class TurkeyTaskProvider extends AbstractTaskProvider implements TaskProviderContract
 {
     private string $url = 'http://www.mocky.io/v2/5d47f24c330000623fa3ebfa';
     private Provider $provider;
